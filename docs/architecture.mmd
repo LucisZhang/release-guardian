@@ -1,0 +1,18 @@
+%% Sanitized architecture source derived from claims matrix section 6.
+%% Source commit: ca2ef58dfc1a6dc188ccb9e87525c9537ab8e11d
+flowchart LR
+  intake["Change intake"] --> classify["Classify"] --> parse["Parse typed request"] --> fanout{"Parallel evidence retrieval"}
+  fanout --> code["Code dependencies"]
+  fanout --> schema["Schema impact"]
+  fanout --> api["API contracts"]
+  fanout --> ops["Runbooks and incidents"]
+  code --> aggregate["Aggregate evidence"]
+  schema --> aggregate
+  api --> aggregate
+  ops --> aggregate
+  aggregate --> grade["Apply risk floor and grade"] --> plan["Build rollout and rollback plan"]
+  plan --> validate["Validate schema, citations, and consistency"] --> gate["Human approval interrupt"]
+  gate -->|approved| publish["Publish report artifact"]
+  gate -->|rejected or needs info| hold["Hold or gather more evidence"]
+  checkpoint[("Durable checkpoints")] -. resume .-> gate
+  audit[("Approval audit log")] -. decision .-> gate

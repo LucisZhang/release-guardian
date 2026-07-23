@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "package": "release-guardian-v1-evidence",
+  "created_on": "2026-07-12",
+  "status": "candidate_for_human_review",
+  "source": {
+    "private_repository_commit": "ca2ef58dfc1a6dc188ccb9e87525c9537ab8e11d",
+    "portfolio_baseline_commit": "a856e64ad12bbbf054f829658f68af28df230135",
+    "claims_source": "docs/release-guardian-claims.md"
+  },
+  "approval": {
+    "legal_and_ownership_review": "human-confirmed complete on 2026-07-12",
+    "exact_asset_hash_approval": "pending",
+    "license_and_notice_terms": "not provided; no terms inferred",
+    "publication_or_deploy": "not approved"
+  },
+  "evidence_boundaries": [
+    "Live and deterministic-stub evaluations are separate assets.",
+    "Every cost-evidence row retains its measured, estimated, projected, or modeled class.",
+    "Aggregate live gates must be shown with the 30/44 strict all-trials residual.",
+    "Aggregate stub gates must be shown with the 15/44 strict all-trials residual.",
+    "No local reproduction was performed; W5 remains declined.",
+    "Screenshots are candidate inputs and are not approved for publication."
+  ],
+  "assets": [
+    {
+      "path": "architecture.mmd",
+      "sha256": "ca53cb3aab82d1d02ad14a11f6e394a710be81a0ff3f5c48feefac093d70ddba",
+      "kind": "diagram_source",
+      "provenance": "Newly written from claims matrix section 6; private ARCHITECTURE.md was reference-only because W3 identifies stale portions."
+    },
+    {
+      "path": "data/evaluation-live.csv",
+      "sha256": "29eca7eddbc8885c0eb96705af46883c5986f61dda46f6a34c261e86aa49a892",
+      "kind": "evaluation_table",
+      "mode": "live",
+      "evidence_class": "measured",
+      "source_sha256": "0e07cefc977279471b5b37189d05f5de91bd7ea67c16a294f26dd8c5ca4102c6"
+    },
+    {
+      "path": "data/evaluation-stub.csv",
+      "sha256": "a312feb6599f7e63732ad36387c3bb390bc73f18a67695e9437182dcd01b1bfe",
+      "kind": "evaluation_table",
+      "mode": "stub",
+      "evidence_class": "deterministic",
+      "source_sha256": "b1cf95f202dc12ab3ff709e3f978159936902fd7a9a09b278f9852f7c0d346fb"
+    },
+    {
+      "path": "data/cost-evidence.csv",
+      "sha256": "3eb3ac2908f8e7b9aec9b725e8f757dcca1fb89010022ba6643f83ac3532201c",
+      "kind": "evidence_table",
+      "evidence_classes": ["measured", "estimated", "projected", "modeled"],
+      "source_sha256": "5008a039aace2bea0731dd68e7cd4c33f94b043c9e476640601ab3ea00caaafc"
+    },
+    {
+      "path": "data/findings.csv",
+      "sha256": "8f479171837a543ff8e8439ac983d37fc4b3bb1ccb3792486e037a828d7f9b95",
+      "kind": "sanitized_consistency_findings",
+      "provenance": "Newly written from W3-01 through W3-13 in the claims matrix."
+    },
+    {
+      "path": "screenshots/risk-guardrail.png",
+      "sha256": "0df0b05fdd99188946c594462f9beb84dc8efd69dee5de147f408707acc582a9",
+      "kind": "candidate_screenshot",
+      "source_path": "docs/screenshots/change-view.png",
+      "source_sha256": "243d86391087f09c080ee7aba9eaff660670bcb2c5d96ed7d8da40769dd98cc0",
+      "sanitization": "Cropped to the generic deterministic risk-factor card; scenario IDs, run IDs, service names, evidence IDs, paths, and injection payload text excluded; ancillary metadata removed."
+    },
+    {
+      "path": "screenshots/pipeline-trace-stub.png",
+      "sha256": "22de4890f08b961dee8e7c234f843d702a7833a6f825a199d9cc708db645acff",
+      "kind": "candidate_screenshot",
+      "source_path": "docs/screenshots/trace-view.png",
+      "source_sha256": "159f20f21336affe1baec8e198c1d6e751b65616245bd314c72713efd433ebdd",
+      "mode": "stub",
+      "boundary": "Design trace only; timing marks are not a live-performance benchmark.",
+      "sanitization": "Cropped to remove run ID, status, proxy cost, token totals, and headline latency; ancillary metadata removed."
+    },
+    {
+      "path": "screenshots/evaluation-stub.png",
+      "sha256": "f534a133d5bc2a0cf6b0aed3425446127537b1a72e6ce14c8c3978486719eff9",
+      "kind": "candidate_screenshot",
+      "source_path": "docs/screenshots/eval-view.png",
+      "source_sha256": "2f85b6248bedfa42a0e5dd8d8f0492c190290bd25db1badf2860e579fb39fe19",
+      "mode": "stub",
+      "required_adjacent_disclosure": "Deterministic stub only; 15/44 scenarios are flagged in the strict all-trials view; not live performance.",
+      "sanitization": "Cropped before per-scenario rows, removing scenario IDs and resource names; ancillary metadata removed."
+    }
+  ]
+}

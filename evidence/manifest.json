@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "package": "release-guardian-public-replay-v1",
+  "publication_record": {
+    "approved_scope_date": "2026-07-22",
+    "published_assets_only": true,
+    "source_manifest_preserved": "evidence/source-manifest.json",
+    "source_manifest_sha256": "f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8",
+    "boundary": "This record authorizes only the listed sanitized derivatives. It does not rewrite the historical candidate manifest or publish private source, raw reports, screenshots, or workstation metadata."
+  },
+  "required_disclosures": {
+    "funded_live": "Eight aggregate live gates pass; 30/44 scenarios are flagged in the strict all-trials outcome view.",
+    "deterministic_stub": "Eight aggregate deterministic-stub gates pass; 15/44 scenarios are flagged in the strict all-trials view.",
+    "replay": "Sanitized deterministic replay — not connected to the private repository or a live model."
+  },
+  "assets": [
+    {
+      "path": "docs/architecture.mmd",
+      "sha256": "ca53cb3aab82d1d02ad14a11f6e394a710be81a0ff3f5c48feefac093d70ddba",
+      "kind": "sanitized_diagram_source"
+    },
+    {
+      "path": "evidence/data/evaluation-live.csv",
+      "sha256": "29eca7eddbc8885c0eb96705af46883c5986f61dda46f6a34c261e86aa49a892",
+      "kind": "sanitized_evaluation_table",
+      "mode": "live",
+      "evidence_class": "measured"
+    },
+    {
+      "path": "evidence/data/evaluation-stub.csv",
+      "sha256": "a312feb6599f7e63732ad36387c3bb390bc73f18a67695e9437182dcd01b1bfe",
+      "kind": "sanitized_evaluation_table",
+      "mode": "stub",
+      "evidence_class": "deterministic"
+    },
+    {
+      "path": "evidence/data/cost-evidence.csv",
+      "sha256": "3eb3ac2908f8e7b9aec9b725e8f757dcca1fb89010022ba6643f83ac3532201c",
+      "kind": "sanitized_cost_table",
+      "evidence_classes": ["measured", "estimated", "projected", "modeled"]
+    },
+    {
+      "path": "evidence/data/findings.csv",
+      "sha256": "8f479171837a543ff8e8439ac983d37fc4b3bb1ccb3792486e037a828d7f9b95",
+      "kind": "sanitized_consistency_findings"
+    },
+    {
+      "path": "replay/synthetic-scenarios.json",
+      "sha256": "9e28c710e63191ac37f9b015e52f3a41a5f848d7286dd93ed94fcb4d7d506541",
+      "kind": "fictional_deterministic_replay_fixture"
+    },
+    {
+      "path": "evidence/source-manifest.json",
+      "sha256": "f37967289db4816cfd5f23bdad7ca281b979f52420c4bf65b34b0383a6796eb8",
+      "kind": "preserved_historical_candidate_manifest"
+    }
+  ]
+}
+

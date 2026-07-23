@@ -1,0 +1,16 @@
+{
+  "name": "release-guardian-public-replay",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sanitized deterministic release-review replay with evidence-gated live and stub evaluation records.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "node --test tests/replay.test.mjs",
+    "verify:evidence": "node scripts/verify-evidence.mjs",
+    "replay": "node scripts/replay.mjs"
+  }
+}
+

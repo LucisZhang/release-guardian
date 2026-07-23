@@ -1,0 +1,488 @@
+{
+  "schema_version": 2,
+  "seed": "release-guardian-synthetic-replay-v2",
+  "evidence_modes": [
+    "Synthetic Sandbox",
+    "Deterministic Replay"
+  ],
+  "classification": [
+    "synthetic",
+    "sanitized",
+    "presentation-layer derivative",
+    "not source evidence"
+  ],
+  "fixed_disclosure": "Sanitized deterministic replay — not connected to the private repository or a live model.",
+  "rules": {
+    "breaking_api": 40,
+    "irreversible_schema": 35,
+    "auth_boundary": 25,
+    "major_dependency": 20,
+    "rollback_untested": 20,
+    "monitoring_gap": 15,
+    "missing_evidence_each": 10,
+    "bands": {
+      "critical": 70,
+      "high": 45,
+      "medium": 20,
+      "low": 0
+    }
+  },
+  "scenarios": [
+    {
+      "id": "SYN-AUTH-01",
+      "kind": "authentication configuration",
+      "summary": "Require signed session cookies for the fictional customer portal.",
+      "affected_components": [
+        "edge configuration",
+        "session middleware",
+        "support runbook"
+      ],
+      "proposed_change": "Turn on strict cookie signing and shorten the acceptance overlap to 15 minutes.",
+      "declared_owner": "Fictional platform team",
+      "expected_impact": "Existing sessions may be re-authenticated during the overlap window.",
+      "synthetic_timestamp": "2030-01-15T09:00:00Z",
+      "facts": {
+        "breaking_api": false,
+        "irreversible_schema": false,
+        "auth_boundary": true,
+        "major_dependency": false,
+        "rollback_tested": true,
+        "monitoring_gap": false
+      },
+      "retrievers": {
+        "code": {
+          "status": "complete",
+          "items": [
+            "Two synthetic middleware call sites",
+            "One configuration reader"
+          ],
+          "support": "Both readers accept old and new cookie keys during overlap.",
+          "details": {
+            "changed_component": "Synthetic session middleware",
+            "changed_symbol": "verifySignedSession()",
+            "dependency_edge": "edge configuration -> session middleware -> fictional portal",
+            "risky_pattern": "Unsigned or stale signing keys accepted outside the overlap window",
+            "test_status": "Dual-key, unsigned-cookie, and expiry fixtures pass",
+            "source_boundary": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: this demo cannot independently prove private-code lineage."
+          }
+        },
+        "schema": {
+          "status": "complete",
+          "items": [
+            "No database migration"
+          ],
+          "support": "No persistent record shape changes.",
+          "details": {
+            "before_field": "No persistent field",
+            "after_field": "No persistent field",
+            "type_change": "None",
+            "nullable_change": "None",
+            "compatibility": "Database contract unchanged",
+            "migration_requirement": "No database migration",
+            "affected_consumer": "None at the persistence layer"
+          }
+        },
+        "api": {
+          "status": "complete",
+          "items": [
+            "No response-schema change",
+            "Authentication behavior changes"
+          ],
+          "support": "Unauthenticated responses remain contract-compatible.",
+          "details": {
+            "endpoint": "GET /synthetic/session",
+            "contract_diff": "Authentication behavior changes; response schema does not",
+            "removed_or_changed_field": "No response field removed",
+            "consumer_impact": "Existing synthetic sessions may re-authenticate",
+            "backward_compatibility": "Response-compatible during dual-key overlap",
+            "versioning_requirement": "No endpoint version required"
+          }
+        },
+        "operations": {
+          "status": "complete",
+          "items": [
+            "Rollback toggle documented",
+            "Session-expiry monitor defined"
+          ],
+          "support": "Synthetic rollback drill is marked complete.",
+          "details": {
+            "rollout_readiness": "Dual-key canary plan ready",
+            "rollback_readiness": "Synthetic toggle rollback rehearsed",
+            "runbook_status": "Sanitized session-rotation checklist available",
+            "alert_coverage": "Re-authentication and signature-failure alerts defined",
+            "possible_slo_impact": "Possible temporary login-success-rate impact",
+            "required_owner_or_approval": "Fictional platform and security reviewers"
+          }
+        }
+      },
+      "missing_evidence": [],
+      "rollout": [
+        "Enable dual-key verification",
+        "Deploy strict signer to 10%",
+        "Watch re-authentication rate",
+        "Increase to 100% after one review window"
+      ],
+      "rollback": [
+        "Restore previous signing toggle",
+        "Retain dual-key verification",
+        "Confirm session recovery monitor returns to baseline"
+      ],
+      "verification_checks": [
+        "Old and new synthetic sessions both validate during overlap",
+        "Unsigned synthetic cookie is rejected",
+        "Re-authentication alert remains below stop threshold"
+      ],
+      "stopping_conditions": [
+        "Unexpected re-authentication spike",
+        "Any signed-cookie verification mismatch"
+      ],
+      "approval_requirements": [
+        "Platform reviewer",
+        "Security reviewer"
+      ]
+    },
+    {
+      "id": "SYN-SCHEMA-02",
+      "kind": "database schema change",
+      "summary": "Replace a fictional invoice status column with a new enum-backed field.",
+      "affected_components": [
+        "invoice table",
+        "billing worker",
+        "report export"
+      ],
+      "proposed_change": "Drop the legacy status column immediately after backfill.",
+      "declared_owner": "Fictional data services team",
+      "expected_impact": "Readers that still reference the legacy column would fail after migration.",
+      "synthetic_timestamp": "2030-01-16T09:00:00Z",
+      "facts": {
+        "breaking_api": false,
+        "irreversible_schema": true,
+        "auth_boundary": false,
+        "major_dependency": false,
+        "rollback_tested": false,
+        "monitoring_gap": true
+      },
+      "retrievers": {
+        "code": {
+          "status": "complete",
+          "items": [
+            "Three synthetic readers",
+            "One scheduled export"
+          ],
+          "support": "One reader still references the legacy status field.",
+          "details": {
+            "changed_component": "Synthetic billing worker and export reader",
+            "changed_symbol": "mapInvoiceStatus()",
+            "dependency_edge": "invoice table -> billing worker -> report export",
+            "risky_pattern": "Legacy field read survives after destructive drop",
+            "test_status": "One compatibility fixture fails until dual-read is added",
+            "source_boundary": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: consumer completeness cannot be independently verified here."
+          }
+        },
+        "schema": {
+          "status": "complete",
+          "items": [
+            "Destructive column drop",
+            "Enum constraint addition"
+          ],
+          "support": "The proposed migration has no shadow-column period.",
+          "details": {
+            "before_field": "invoice.status_text",
+            "after_field": "invoice.status_code",
+            "type_change": "free text -> constrained enum",
+            "nullable_change": "nullable -> non-null after backfill",
+            "compatibility": "Breaking if legacy readers remain",
+            "migration_requirement": "Add, dual-write, backfill, compare, then remove",
+            "affected_consumer": "Synthetic billing worker and scheduled export"
+          }
+        },
+        "api": {
+          "status": "complete",
+          "items": [
+            "External response unchanged"
+          ],
+          "support": "Mapping code depends on both old and new database fields during transition.",
+          "details": {
+            "endpoint": "GET /synthetic/invoices/:id",
+            "contract_diff": "Public response unchanged; internal mapping changes",
+            "removed_or_changed_field": "No public field removed",
+            "consumer_impact": "Mapping fails if the old column disappears early",
+            "backward_compatibility": "Compatible only during dual-read period",
+            "versioning_requirement": "No public version; migration window required"
+          }
+        },
+        "operations": {
+          "status": "partial",
+          "items": [
+            "Backfill check exists"
+          ],
+          "support": "Restore rehearsal and export monitor are missing.",
+          "details": {
+            "rollout_readiness": "Blocked pending restore proof",
+            "rollback_readiness": "Snapshot exists; restore rehearsal missing",
+            "runbook_status": "Backfill steps present; restore section incomplete",
+            "alert_coverage": "Export failure monitor missing",
+            "possible_slo_impact": "Possible billing export availability impact",
+            "required_owner_or_approval": "Fictional data, application, and operations reviewers"
+          }
+        }
+      },
+      "missing_evidence": [
+        "Tested restore procedure",
+        "Export failure monitor"
+      ],
+      "rollout": [
+        "Add new field without dropping old field",
+        "Dual-write both fields",
+        "Backfill and compare",
+        "Remove old reads only after a review window"
+      ],
+      "rollback": [
+        "Stop dual-write deploy",
+        "Re-enable old readers",
+        "Restore from the pre-migration snapshot if destructive migration ran"
+      ],
+      "verification_checks": [
+        "Backfill row counts match",
+        "Old and new status values reconcile",
+        "Scheduled export reads the new field"
+      ],
+      "stopping_conditions": [
+        "Any reconciliation difference",
+        "Missing restore proof",
+        "Export monitor unavailable"
+      ],
+      "approval_requirements": [
+        "Data reviewer",
+        "Application owner",
+        "Operations reviewer"
+      ]
+    },
+    {
+      "id": "SYN-API-03",
+      "kind": "API field removal",
+      "summary": "Remove a fictional delivery_window field from the public order response.",
+      "affected_components": [
+        "order API",
+        "mobile client",
+        "partner adapter"
+      ],
+      "proposed_change": "Delete the field in the next standard release without a deprecation window.",
+      "declared_owner": "Fictional commerce API team",
+      "expected_impact": "Two documented consumers still parse the field.",
+      "synthetic_timestamp": "2030-01-17T09:00:00Z",
+      "facts": {
+        "breaking_api": true,
+        "irreversible_schema": false,
+        "auth_boundary": false,
+        "major_dependency": false,
+        "rollback_tested": true,
+        "monitoring_gap": false
+      },
+      "retrievers": {
+        "code": {
+          "status": "complete",
+          "items": [
+            "One producer",
+            "Two synthetic consumers"
+          ],
+          "support": "Both consumers deserialize delivery_window as required.",
+          "details": {
+            "changed_component": "Synthetic order serializer and two consumers",
+            "changed_symbol": "serializeDeliveryWindow()",
+            "dependency_edge": "order API -> mobile client and partner adapter",
+            "risky_pattern": "Required field removed without deprecation",
+            "test_status": "Consumer contract fixtures fail after removal",
+            "source_boundary": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: the public demo cannot establish the real consumer inventory."
+          }
+        },
+        "schema": {
+          "status": "complete",
+          "items": [
+            "No database migration"
+          ],
+          "support": "Only the response contract changes.",
+          "details": {
+            "before_field": "No database change",
+            "after_field": "No database change",
+            "type_change": "None",
+            "nullable_change": "None",
+            "compatibility": "Persistence contract unchanged",
+            "migration_requirement": "No database migration",
+            "affected_consumer": "API consumers only"
+          }
+        },
+        "api": {
+          "status": "complete",
+          "items": [
+            "Required response field removed",
+            "No versioned endpoint proposed"
+          ],
+          "support": "The change is backward-incompatible.",
+          "details": {
+            "endpoint": "GET /synthetic/orders/:id",
+            "contract_diff": "delivery_window removed from response",
+            "removed_or_changed_field": "delivery_window",
+            "consumer_impact": "Two synthetic consumers deserialize it as required",
+            "backward_compatibility": "Backward-incompatible",
+            "versioning_requirement": "Deprecation window or versioned endpoint required"
+          }
+        },
+        "operations": {
+          "status": "complete",
+          "items": [
+            "Response-shape monitor",
+            "Rollback release artifact"
+          ],
+          "support": "Rollback is tested but cannot prevent initial consumer breakage.",
+          "details": {
+            "rollout_readiness": "Blocked until consumer acknowledgements",
+            "rollback_readiness": "Previous serializer artifact tested",
+            "runbook_status": "Rollback release steps documented",
+            "alert_coverage": "Response-shape monitor available",
+            "possible_slo_impact": "Consumer error-rate increase possible",
+            "required_owner_or_approval": "Fictional API reviewer and consumer owners"
+          }
+        }
+      },
+      "missing_evidence": [
+        "Consumer deprecation acknowledgement"
+      ],
+      "rollout": [
+        "Mark field deprecated",
+        "Publish consumer migration note",
+        "Observe usage for one compatibility window",
+        "Remove only after acknowledgements"
+      ],
+      "rollback": [
+        "Redeploy response serializer with delivery_window",
+        "Confirm response-shape monitor",
+        "Notify synthetic consumers"
+      ],
+      "verification_checks": [
+        "Contract tests cover both endpoint versions",
+        "Consumer acknowledgements recorded",
+        "Response-shape monitor is green"
+      ],
+      "stopping_conditions": [
+        "Any active consumer remains",
+        "Versioned compatibility route is absent"
+      ],
+      "approval_requirements": [
+        "API reviewer",
+        "Consumer owners"
+      ]
+    },
+    {
+      "id": "SYN-DEP-04",
+      "kind": "dependency upgrade",
+      "summary": "Upgrade a fictional JSON validation library across one major version.",
+      "affected_components": [
+        "request validator",
+        "batch importer",
+        "build manifest"
+      ],
+      "proposed_change": "Adopt the new major version and its stricter default format checks.",
+      "declared_owner": "Fictional developer experience team",
+      "expected_impact": "Previously accepted malformed synthetic dates may be rejected.",
+      "synthetic_timestamp": "2030-01-18T09:00:00Z",
+      "facts": {
+        "breaking_api": false,
+        "irreversible_schema": false,
+        "auth_boundary": false,
+        "major_dependency": true,
+        "rollback_tested": true,
+        "monitoring_gap": false
+      },
+      "retrievers": {
+        "code": {
+          "status": "complete",
+          "items": [
+            "Two validator imports",
+            "One batch path"
+          ],
+          "support": "A compatibility wrapper isolates the new defaults.",
+          "details": {
+            "changed_component": "Synthetic request validator and batch importer",
+            "changed_symbol": "validateSyntheticDate()",
+            "dependency_edge": "validation library -> compatibility wrapper -> request and batch paths",
+            "risky_pattern": "Major-version default rejects previously accepted malformed dates",
+            "test_status": "Compatibility and malformed-date fixtures pass",
+            "source_boundary": "Withheld by publication boundary: private paths and real symbols are not shown. Impact: transitive dependency completeness is not proven by the demo."
+          }
+        },
+        "schema": {
+          "status": "complete",
+          "items": [
+            "No stored schema change"
+          ],
+          "support": "Validation behavior changes before persistence.",
+          "details": {
+            "before_field": "No stored schema change",
+            "after_field": "No stored schema change",
+            "type_change": "None",
+            "nullable_change": "None",
+            "compatibility": "Validation changes before persistence",
+            "migration_requirement": "No database migration",
+            "affected_consumer": "Synthetic importer inputs"
+          }
+        },
+        "api": {
+          "status": "complete",
+          "items": [
+            "Error payload shape unchanged"
+          ],
+          "support": "A synthetic malformed-date fixture now returns the existing validation error.",
+          "details": {
+            "endpoint": "POST /synthetic/import",
+            "contract_diff": "Acceptance behavior tightens; error shape remains stable",
+            "removed_or_changed_field": "No field removed",
+            "consumer_impact": "Malformed synthetic dates are rejected",
+            "backward_compatibility": "Error contract compatible; acceptance behavior differs",
+            "versioning_requirement": "No version if rejection category is accepted"
+          }
+        },
+        "operations": {
+          "status": "complete",
+          "items": [
+            "Rejected-request monitor",
+            "Lockfile rollback"
+          ],
+          "support": "The previous lockfile and build artifact are retained.",
+          "details": {
+            "rollout_readiness": "Batch canary plan ready",
+            "rollback_readiness": "Previous lockfile and build retained",
+            "runbook_status": "Dependency rollback checklist available",
+            "alert_coverage": "Rejected-request and batch-completion monitors defined",
+            "possible_slo_impact": "Possible request acceptance-rate change",
+            "required_owner_or_approval": "Fictional application reviewer"
+          }
+        }
+      },
+      "missing_evidence": [],
+      "rollout": [
+        "Run compatibility fixtures",
+        "Deploy to batch canary",
+        "Review rejection categories",
+        "Promote after one review window"
+      ],
+      "rollback": [
+        "Restore previous lockfile",
+        "Redeploy prior build artifact",
+        "Confirm rejected-request monitor normalizes"
+      ],
+      "verification_checks": [
+        "Valid fixtures remain accepted",
+        "Malformed dates fail with the existing error shape",
+        "Batch canary completes"
+      ],
+      "stopping_conditions": [
+        "New rejection category appears",
+        "Batch completion rate changes"
+      ],
+      "approval_requirements": [
+        "Application reviewer"
+      ]
+    }
+  ]
+}
